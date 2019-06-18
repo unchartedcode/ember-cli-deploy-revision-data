@@ -120,13 +120,19 @@ Constructs a revision key based on the most recent git tag and the currently che
 
 ##### revisionKey
 
-The unique identifier of this build based on the git tag, followed by a `+` symbol, followed by the first 8 characters of the current commit hash.
+The unique identifier of this build based on the git tag, followed by a the separator symbol (`+` by default), followed by the first 8 characters of the current commit hash.
 
 For example, if your most recent git tag is `v2.0.3`, and the current commit is `0993043d49f9e0[...]`, this generator will return a revision of `v2.0.3+0993043d`.
 
 ##### timestamp
 
 The timestamp of the current deploy
+
+#### Configuration Options
+
+##### separator
+
+The text used to separate the tag name from the commit sha. By default, `+` is used.
 
 ### Git Commit generator
 
@@ -152,7 +158,7 @@ Similar to the Git Tag Commit generator but uses the `package.json` version stri
 
 ##### revisionKey
 
-The unique identifier of this build based on the version in the `package.json`, followed by a `+` symbol, followed by the first 8 characters of the current commit hash.
+The unique identifier of this build based on the version in the `package.json`, followed by a the separator symbol (`+` by default), followed by the first 8 characters of the current commit hash.
 
 For example, if your package.json version is `v2.0.3`, and the current commit is `0993043d49f9e0[...]`, this generator will return a revision of `v2.0.3+0993043d`.
 
@@ -163,6 +169,10 @@ For example, if your package.json version is `v2.0.3`, and the current commit is
 The timestamp of the current deploy
 
 #### Configuration Options
+
+##### separator
+
+The text used to separate the tag name from the commit sha. By default, `+` is used.
 
 ##### versionFile
 
@@ -192,6 +202,10 @@ Committer's email
 
 Committer's name
 
+##### message
+
+The commit message
+
 ##### branch
 
 Git branch being deployed
@@ -213,8 +227,12 @@ The following properties are expected to be present on the deployment `context` 
 
 ## Running Tests
 
-- `npm test`
+* yarn test
 
-[1]: http://ember-cli.github.io/ember-cli-deploy/plugins "Plugin Documentation"
+## Why `ember build` and `ember test` don't work
+
+Since this is a node-only ember-cli addon, this package does not include many files and dependencies which are part of ember-cli's typical `ember build` and `ember test` processes.
+
+[1]: http://ember-cli-deploy.com/ "Plugin Documentation"
 [2]: https://github.com/ember-cli-deploy/ember-cli-deploy-build "ember-cli-deploy-build"
 [3]: https://github.com/ember-cli/ember-cli-deploy "ember-cli-deploy"

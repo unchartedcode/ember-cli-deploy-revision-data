@@ -1,7 +1,6 @@
-/* jshint node: true */
 'use strict';
 
-var Promise = require('ember-cli/lib/ext/promise');
+var RSVP = require('rsvp');
 
 var DeployPluginBase = require('ember-cli-deploy-plugin');
 
@@ -13,6 +12,7 @@ module.exports = {
       name: options.name,
       defaultConfig: {
         type: 'file-hash',
+        separator: '+',
         filePattern: 'index.html',
         versionFile: 'package.json',
         distDir: function(context) {
@@ -23,7 +23,7 @@ module.exports = {
           return context.distFiles;
         },
 
-        scm: function(context) {
+        scm: function(/* context */) {
           return require('./lib/scm-data-generators')['git'];
         }
 
@@ -37,7 +37,7 @@ module.exports = {
             scm: this._getScmData()
         };
 
-        return Promise.hash(promises)
+        return RSVP.hash(promises)
           .then(function(results) {
             var data = results.data;
             data.scm = results.scm;
@@ -62,17 +62,16 @@ module.exports = {
       _getScmData: function() {
         var ScmDataGenerator = this.readConfig('scm');
         if (ScmDataGenerator) {
-          return new ScmDataGenerator({
-            plugin: this
-          }).generate();
+          var path = this.readConfig('distDir');
+          return new ScmDataGenerator(path).generate();
         } else {
-          return Promise.resolve();
+          return RSVP.resolve();
         }
       },
 
       _errorMessage: function(error) {
         this.log(error, { color: 'red' });
-        return Promise.reject(error);
+        return RSVP.reject(error);
       }
     });
     return new DeployPlugin();
