@@ -5,29 +5,30 @@ var RSVP = require('rsvp');
 var DeployPluginBase = require('ember-cli-deploy-plugin');
 
 module.exports = {
-  name: 'ember-cli-deploy-revision-data',
+  name: require('./package').name,
 
   createDeployPlugin: function(options) {
+    var config = {
+      type: 'file-hash',
+      separator: '+',
+      filePattern: 'index.html',
+      versionFile: 'package.json',
+      distDir: function(context) {
+        return context.distDir;
+      },
+
+      distFiles: function(context) {
+        return context.distFiles;
+      },
+
+      scm: function(/* context */) {
+        return require('./lib/scm-data-generators')['git'];
+      }
+
+    };
     var DeployPlugin = DeployPluginBase.extend({
       name: options.name,
-      defaultConfig: {
-        type: 'file-hash',
-        separator: '+',
-        filePattern: 'index.html',
-        versionFile: 'package.json',
-        distDir: function(context) {
-          return context.distDir;
-        },
-
-        distFiles: function(context) {
-          return context.distFiles;
-        },
-
-        scm: function(/* context */) {
-          return require('./lib/scm-data-generators')['git'];
-        }
-
-      },
+      defaultConfig: config,
 
       prepare: function(/*context*/) {
         var self = this;
